@@ -1,4 +1,5 @@
 # QUESTION 1 - Unexpected Plot
+# The unexpected plot turns out to be a fractal pattern known as the Sierpinski hexagon
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,14 +8,12 @@ import random
 
 def random_point_within(polygon):
     min_x, min_y, max_x, max_y = polygon.bounds
-    point = None
 
-    while point is None:
+    while True:
         random_pt = Point([random.uniform(min_x, max_x), random.uniform(min_y, max_y)])
         if random_pt.within(polygon):
-            point = random_pt
+            return random_pt
 
-    return point
 
 def get_triangle_centroid(vertices):
     vertices = np.array(vertices)
@@ -30,15 +29,13 @@ def unexpected_plot():
 
     P = random_point_within(hexagon)
 
-    for _ in range(10):
-        plt.plot(P.x, P.y, marker='o')
+    for _ in range(10_000):
+        plt.plot(P.x, P.y, marker='o', markersize=1)
         random_vertex_index = random.randint(0,5)
-        adjacent_vertices = [hexagon_vertices[random_vertex_index], hexagon_vertices[(random_vertex_index+1)%6]]
+        next_vertex_index = (random_vertex_index + random.choice([-1,1])) % 6
+        adjacent_vertices = [hexagon_vertices[random_vertex_index], hexagon_vertices[next_vertex_index]]
 
         triangle_vertices = adjacent_vertices + [(P.x, P.y)]
-        triangle = Polygon(triangle_vertices)
-        plt.plot(*triangle.exterior.xy)
-
         P = Point(get_triangle_centroid(triangle_vertices))
 
 
